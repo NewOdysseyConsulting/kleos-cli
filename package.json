@@ -1,0 +1,59 @@
+{
+	"name": "kleos",
+	"version": "0.1.0",
+	"description": "Kleos from the terminal: list your businesses, ask for drafts, see what's waiting for review, approve posts, record what went live, and read results and AI visibility through the Kleos public API.",
+	"type": "module",
+	"bin": {
+		"kleos": "dist/cli.js"
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"keywords": [
+		"kleos",
+		"marketing",
+		"cli",
+		"mcp",
+		"content",
+		"small business",
+		"social media",
+		"seo",
+		"ai visibility",
+		"automation",
+		"api"
+	],
+	"author": "Kleos (New Odyssey) <support@getkleos.ai> (https://getkleos.ai)",
+	"license": "MIT",
+	"homepage": "https://getkleos.ai",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NewOdysseyConsulting/kleos-cli.git"
+	},
+	"bugs": {
+		"url": "https://github.com/NewOdysseyConsulting/kleos-cli/issues",
+		"email": "support@getkleos.ai"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
+		"typecheck": "tsc --noEmit",
+		"lint": "tsc --noEmit",
+		"test": "tsx --test tests/*.test.ts",
+		"smoke": "npm run build && node scripts/smoke.mjs",
+		"prepack": "npm run build"
+	},
+	"dependencies": {
+		"commander": "^14.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.10.0",
+		"tsx": "^4.19.0",
+		"typescript": "^5.9.0"
+	}
+}

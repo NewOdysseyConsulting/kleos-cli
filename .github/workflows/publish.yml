@@ -1,0 +1,44 @@
+# Publishes the `kleos` package to npm when a GitHub release is published, with provenance (the package on npm links
+# back to this repository, this workflow and the commit it was built from). Needs an npm automation token in the
+# repository secret NPM_TOKEN (SUBMISSION.md has the steps). The package's version must match the release tag (v0.1.0
+# for 0.1.0); the version check below refuses the publish otherwise, so a release can never ship the wrong version.
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run smoke
+      - name: Check the version matches the release tag
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::The release tag is $TAG but package.json says $version. Bump the version (npm version $TAG) and release again."
+            exit 1
+          fi
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
